@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartSchool Learning</title>
+<style>
+body { margin: 0; font-family: Arial, sans-serif; background: #f0f4ff; }
+.screen { display: none; }
+.active { display: block; }
+
+#loading { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); z-index: 999; font-size: 30px; color: #2a4fa4; text-align: center; padding-top: 200px; }
+.spinner { border: 6px solid #d0d0d0; border-top: 6px solid #2a77ff; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+.navbar { display: flex; justify-content: space-between; padding: 15px 30px; background: linear-gradient(to right, #2a77ff, #4ec1ff); color: white; }
+.logo { font-size: 24px; font-weight: bold; }
+.sign-in-btn { padding: 10px 20px; background: #ff7f50; border-radius: 6px; border: none; color: white; cursor: pointer; transition: 0.3s; }
+.sign-in-btn:hover { background: #ff6347; }
+
+.hero { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; background: #ffe0b2; text-align: center; }
+.hero h1 { font-size: 42px; color: #2a4fa4; margin-bottom: 15px; }
+.hero p { font-size: 18px; color: #444; max-width: 600px; }
+
+.login-box, .name-box { background: #fefefe; padding: 30px; width: 300px; margin: 100px auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); text-align: center; }
+.login-box input, .name-box input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 6px; border: 1px solid #bbb; }
+.login-box button, .name-box button { width: 100%; padding: 10px; border: none; background: #2a77ff; color: white; border-radius: 6px; cursor: pointer; transition: 0.3s; }
+.login-box button:hover, .name-box button:hover { background: #1c5ed1; }
+
+#greeting { text-align: center; font-size: 28px; color: #2a4fa4; margin: 20px 0; font-weight: bold; }
+
+.games { text-align: center; padding: 70px; min-height: 100vh; background: linear-gradient(to right, #0e0e0e, #222222); color: #fff; }
+.game-box { background: #444; padding: 20px; width: 300px; margin: 20px auto; border-radius: 10px; transition: 0.3s; }
+.game-box:hover { background: #2a77ff; }
+.game-box a { color: #fff; text-decoration: none; font-size: 20px; }
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading">
+<div class="spinner"></div> Loading...
+</div>
+
+<!-- Landing Page -->
+<div id="landing" class="screen active">
+<div class="hero">
+<h1>Welcome to SmartSchool!</h1>
+<p>Click on any subject to see what it covers. Sign in to start learning interactively!</p>
+</div>
+<div style="text-align: center; margin-top: 30px;">
+<button class="sign-in-btn" onclick="delayedScreen('login')">Sign In</button>
+</div>
+</div>
+
+<!-- Login Page -->
+<div id="login" class="screen">
+<div class="login-box">
+<h2>Sign In</h2>
+<input type="text" id="user" placeholder="Email">
+<input type="password" id="pass" placeholder="Password">
+<button onclick="login()">Sign In</button>
+<div id="errorBox" class="error" style="display: none;">Incorrect username or password.</div>
+</div>
+</div>
+
+<!-- Name Page -->
+<div id="name" class="screen">
+<div class="name-box">
+<h2>Welcome!</h2>
+<p>Enter your name to start learning:</p>
+<input type="text" id="firstName" placeholder="First Name">
+<input type="text" id="lastName" placeholder="Last Name">
+<button onclick="goToDashboard()">Continue</button>
+</div>
+</div>
+
+<!-- Dashboard (After Login) -->
+<div id="home" class="screen">
+<div class="navbar">
+<div class="logo">SmartSchool Learning</div>
+<button class="sign-in-btn" onclick="showScreen('landing')">Sign Out</button>
+</div>
+<div class="hero">
+<h1>Welcome Back!</h1>
+<div id="greeting"></div>
+<p>Click a subject to start interactive lessons!</p>
+</div>
+<div class="games">
+<h1>🎮 Secret Games</h1>
+<p>You found the hidden area!</p>
+<div class="game-box">
+<a href="https://example.com" target="_blank">Sample Game</a>
+</div>
+<div class="game-box">
+<a href="https://example.com" target="_blank">Another Game</a>
+</div>
+</div>
+</div>
+
+<script>
+// Page control
+function delayedScreen(id) {
+showLoading(true);
+setTimeout(() => { showLoading(false); showScreen(id); }, 1000);
+}
+function showScreen(id) {
+document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+function showLoading(state) { document.getElementById("loading").style.display = state ? "block" : "none"; }
+
+// Login Function
+function login() {
+const user = document.getElementById("user").value.trim();
+const pass = document.getElementById("pass").value.trim();
+
+// Check if user entered email and password
+if (!user || !pass) {
+alert("Please enter both email and password.");
+return;
+}
+
+// Check if the password is "monkey22"
+if (pass === "monkey22") {
+delayedScreen("name"); // Go to name page if login is successful
+} else {
+document.getElementById("errorBox").style.display = "block"; // Show error message if incorrect password
+}
+}
+
+// Name Input Page (after login)
+function goToDashboard() {
+const first = document.getElementById("firstName").value.trim();
+const last = document.getElementById("lastName").value.trim();
+
+if (!first || !last) {
+alert("Please enter your first and last name.");
+return;
+}
+
+document.getElementById("greeting").innerText = `Hello, ${first} ${last}!`;
+showScreen("home"); // Redirect to home/dashboard
+}
+
+// Helper to show loading
+function showLoading(state) {
+document.getElementById("loading").style.display = state ? "block" : "none";
+}
+
+</script>
+</body>
+</html>
